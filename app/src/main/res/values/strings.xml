@@ -14,6 +14,8 @@
      limitations under the License.
 -->
 <resources>
+    <string name="order_history">Order History</string>
+    <string name="save_order">Save Order</string>
     <string name="app_name">Cupcake</string>
     <string name="order_cupcakes">Order Cupcakes</string>
     <string name="one_cupcake">One Cupcake</string>

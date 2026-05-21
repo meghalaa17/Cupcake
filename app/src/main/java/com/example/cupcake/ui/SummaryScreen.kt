@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.cupcake.ui
 
 import androidx.compose.foundation.layout.Arrangement
@@ -41,15 +26,15 @@ import com.example.cupcake.ui.components.FormattedPriceLabel
 import com.example.cupcake.ui.theme.CupcakeTheme
 
 /**
- * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]
- * lambda that triggers canceling the order and passes the final order to [onSendButtonClicked]
- * lambda
+ * Summary screen updated to include a "Save Order" button that persists
+ * the order to the Room database via the ViewModel.
  */
 @Composable
 fun OrderSummaryScreen(
     orderUiState: OrderUiState,
     onCancelButtonClicked: () -> Unit,
     onSendButtonClicked: (String, String) -> Unit,
+    onSaveOrderClicked: () -> Unit,      // NEW: saves to Room
     modifier: Modifier = Modifier
 ) {
     val resources = LocalContext.current.resources
@@ -59,7 +44,6 @@ fun OrderSummaryScreen(
         orderUiState.quantity,
         orderUiState.quantity
     )
-    //Load and format a string resource with the parameters.
     val orderSummary = stringResource(
         R.string.order_details,
         numberOfCupcakes,
@@ -68,13 +52,10 @@ fun OrderSummaryScreen(
         orderUiState.quantity
     )
     val newOrder = stringResource(R.string.new_cupcake_order)
-    //Create a list of order summary to display
+
     val items = listOf(
-        // Summary line 1: display selected quantity
         Pair(stringResource(R.string.quantity), numberOfCupcakes),
-        // Summary line 2: display selected flavor
         Pair(stringResource(R.string.flavor), orderUiState.flavor),
-        // Summary line 3: display selected pickup date
         Pair(stringResource(R.string.pickup_date), orderUiState.date)
     )
 
@@ -103,6 +84,13 @@ fun OrderSummaryScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
             ) {
+                // NEW: Save to Room database
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onSaveOrderClicked
+                ) {
+                    Text(stringResource(R.string.save_order))
+                }
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onSendButtonClicked(newOrder, orderSummary) }
@@ -125,9 +113,10 @@ fun OrderSummaryScreen(
 fun OrderSummaryPreview() {
     CupcakeTheme {
         OrderSummaryScreen(
-            orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
-            onSendButtonClicked = { subject: String, summary: String -> },
+            orderUiState = OrderUiState(0, "Test", "Test", "\$300.00"),
+            onSendButtonClicked = { _: String, _: String -> },
             onCancelButtonClicked = {},
+            onSaveOrderClicked = {},
             modifier = Modifier.fillMaxHeight()
         )
     }
