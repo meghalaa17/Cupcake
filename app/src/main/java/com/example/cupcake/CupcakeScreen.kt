@@ -114,6 +114,9 @@ fun CupcakeApp(
                         viewModel.setQuantity(it)
                         navController.navigate(CupcakeScreen.Flavor.name)
                     },
+                    onViewHistoryClicked = {
+                        navController.navigate(CupcakeScreen.History.name)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium))
